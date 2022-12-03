@@ -12,11 +12,24 @@ const db = mysql.createConnection({
   database: "employees_db",
 });
 
-//Database Queries
+// Querie Functions
 function departmentQuery() {
-  db.query("SELECT * FROM department", function (err, result) {
-    console.table(result);
-  });
+  db.query(
+    "SELECT department.id AS 'ID', department.name AS 'Department' FROM department",
+    function (err, result) {
+      console.table(result);
+      startApp();
+    }
+  );
+}
+function roleQuery() {
+  db.query(
+    "SELECT role.id AS 'ID', role.title AS 'Title', role.salary AS 'Salary', role.department_id AS 'Department ID' FROM role",
+    function (err, result) {
+      console.table(result);
+      startApp();
+    }
+  );
 }
 
 //Inquirer Questions
@@ -40,11 +53,11 @@ const mainQuestion = [
 
 //App
 function startApp() {
-  return inquirer.prompt(mainQuestion).then((answer) => {
+  inquirer.prompt(mainQuestion).then((answer) => {
     if (answer.mainQuestion === "View all departments.") {
       departmentQuery();
-      //How to fire main question after returning table data?? Promise/Async/Await??
-      inquirer.prompt(mainQuestion);
+    } else if (answer.mainQuestion === "View all roles.") {
+      roleQuery();
     }
   });
 }
