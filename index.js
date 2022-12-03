@@ -32,6 +32,22 @@ function roleQuery() {
   );
 }
 
+function employeeQuery() {
+  db.query(
+    "SELECT employee.id AS 'ID', employee.first_name AS 'First Name', employee.last_name AS 'Last name', employee.role_id AS 'Role ID', employee.manager_id AS 'Manager ID' FROM employee",
+    function (err, result) {
+      console.table(result);
+      startApp();
+    }
+  );
+}
+
+function addDepartment(name) {
+  db.query(`INSERT INTO department(name) VALUES ("${name.newDepartment}")`);
+  console.log("Success! Your department has been added to the database!");
+  startApp();
+}
+
 //Inquirer Questions
 const mainQuestion = [
   {
@@ -51,6 +67,14 @@ const mainQuestion = [
   },
 ];
 
+const addDepartmentQuestions = [
+  {
+    type: "input",
+    message: "Please enter the name of the department you wish to add.",
+    name: "newDepartment",
+  },
+];
+
 //App
 function startApp() {
   inquirer.prompt(mainQuestion).then((answer) => {
@@ -58,6 +82,12 @@ function startApp() {
       departmentQuery();
     } else if (answer.mainQuestion === "View all roles.") {
       roleQuery();
+    } else if (answer.mainQuestion === "View all employees.") {
+      employeeQuery();
+    } else if (answer.mainQuestion === "Add a department.") {
+      inquirer.prompt(addDepartmentQuestions).then((data) => {
+        addDepartment(data);
+      });
     }
   });
 }
