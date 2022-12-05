@@ -64,8 +64,34 @@ function addEmployee(data) {
   startApp();
 }
 
+function selectEmployee() {
+  db.query(
+    "SELECT employee.first_name AS 'firstName', employee.last_name AS 'lastName' FROM employee;",
+    function (err, data) {
+      if (err) throw err;
+      employeeArr = [];
+      for (var i = 0; i < data.length; i++) {
+        employeeArr.push(data[i].firstName + " " + data[i].lastName);
+      }
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            message: "Select an employee to update.",
+            choices: employeeArr,
+            name: "selectedEmployee",
+          },
+        ])
+        .then((data) => {
+          console.log(data);
+        });
+    }
+  );
+}
+
 function updateEmpRole(data) {
-  db.query(``);
+  console.log(data);
+  // db.query(``);
 }
 
 //Inquirer Questions
@@ -167,6 +193,8 @@ function startApp() {
       inquirer.prompt(addEmployeeQuestions).then((data) => {
         addEmployee(data);
       });
+    } else if (answer.mainQuestion === "Update an employee role.") {
+      selectEmployee();
     }
   });
 }
